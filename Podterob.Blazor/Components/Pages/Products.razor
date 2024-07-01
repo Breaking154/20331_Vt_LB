@@ -1,0 +1,25 @@
+﻿@using Podterob.Blazor.Services;
+@using Podterob.Domain.Entities;
+@using Podterob.Domain.Models
+@using Podterob.Blazor.Components.ProductComponents
+@page "/products"
+@rendermode InteractiveServer
+<CascadingValue Value="ProductService">
+	<DishesList DishSelected="ShowDetails" />
+	<Pager />
+</CascadingValue>
+<DishDetails Dish="SelectedDish" />
+
+@code {
+	[Inject] IProductService<Dish> ProductService { get; set; }
+	[Parameter]
+	public Dish SelectedDish { get; set; }
+	protected override async Task OnInitializedAsync()
+	{
+		await ProductService.GetProducts();
+	}
+	void ShowDetails(int id)
+	{
+		SelectedDish = ProductService.Products.First(d => d.Id == id);
+	}
+}
